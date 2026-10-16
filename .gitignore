@@ -1,0 +1,49 @@
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build output
+dist/
+build/
+out/
+*.log
+
+# Electron
+desktop/out/
+desktop/dist/
+desktop/.shots/
+
+# React Native / Expo
+mobile/.expo/
+mobile/android/app/build/
+mobile/ios/build/
+mobile/*.jks
+mobile/*.p8
+mobile/*.p12
+mobile/*.key
+mobile/*.mobileprovision
+
+# Supabase local
+backend/.branches/
+backend/.temp/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# graphify çıktısı - üretilen cache, git'e girmez
+graphify-out/
+
+# Proje koduna ait olmayan kişisel/ofis dosyaları - Drive'a yedeklenir
+*.xlsx
+*.xls

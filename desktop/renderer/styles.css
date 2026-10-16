@@ -1,0 +1,902 @@
+:root {
+  --kraft: #d9cba6;
+  --label-paper: #f3eedf;
+  --ink: #1c1a16;
+  --ink-soft: #6b6455;
+  --stamp-red: #a3362a;
+  --perforation: #b5a780;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: var(--kraft);
+  color: var(--ink);
+  font-family: 'Special Elite', monospace;
+}
+
+.view {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.view[hidden] {
+  display: none;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wordmark {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  letter-spacing: 0.03em;
+}
+
+.wordmark.small {
+  font-size: 20px;
+}
+
+/* --- Login --- */
+
+#view-login {
+  align-items: center;
+  justify-content: center;
+}
+
+.login-card {
+  width: 340px;
+  background: var(--label-paper);
+  border: 2px dashed var(--perforation);
+  box-shadow: 4px 4px 0 rgba(28, 26, 22, 0.16);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.login-card .brand {
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.field-label {
+  display: block;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+}
+
+.field-hint {
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin-bottom: 12px;
+}
+
+.text-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid var(--ink);
+  background: #fff;
+  font-family: 'Special Elite', monospace;
+  font-size: 14px;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+
+.search-row {
+  position: relative;
+}
+
+.search-row .text-input {
+  padding-right: 36px;
+}
+
+.search-clear-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-top: -7px;
+  border: none;
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.search-clear-btn:hover {
+  color: var(--ink);
+}
+
+.text-input.mono {
+  font-family: 'Courier Prime', monospace;
+  letter-spacing: 0.3em;
+  text-align: center;
+  font-size: 18px;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid var(--ink);
+  background: var(--ink);
+  color: var(--label-paper);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background: #2b2820;
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.btn-link {
+  width: 100%;
+  margin-top: 8px;
+  background: none;
+  border: none;
+  color: var(--ink-soft);
+  font-family: 'Special Elite', monospace;
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.status-line {
+  min-height: 18px;
+  font-size: 12px;
+  color: var(--stamp-red);
+  text-align: center;
+}
+
+/* --- Dashboard --- */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 28px;
+  border-bottom: 3px solid var(--ink);
+  background: var(--label-paper);
+}
+
+.topbar-status {
+  font-family: 'Courier Prime', monospace;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.account-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 20px;
+  border-left: 1.5px solid var(--ink);
+}
+
+.account-email {
+  font-family: 'Courier Prime', monospace;
+  font-size: 12px;
+  color: var(--ink);
+}
+
+.account-role {
+  padding: 1px 6px;
+  border: 1.5px solid var(--ink);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  color: var(--ink);
+}
+
+.account-role:empty {
+  display: none;
+}
+
+.sign-out-btn {
+  padding: 5px 12px;
+  border: 1.5px solid var(--ink);
+  background: var(--kraft);
+  color: var(--ink);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+.sign-out-btn:hover {
+  background: var(--ink);
+  color: var(--label-paper);
+}
+
+.sign-out-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.tab-bar {
+  display: flex;
+  gap: 4px;
+  padding: 12px 28px 0;
+  background: var(--label-paper);
+  border-bottom: 1.5px solid var(--perforation);
+}
+
+.tab-btn {
+  padding: 8px 16px;
+  border: 1.5px solid var(--ink);
+  border-bottom: none;
+  background: var(--kraft);
+  color: var(--ink-soft);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+.tab-btn-active {
+  background: var(--label-paper);
+  color: var(--ink);
+}
+
+.dashboard-body {
+  flex: 1;
+  overflow: auto;
+  padding: 24px 28px;
+}
+
+.dashboard-body[hidden] {
+  display: none;
+}
+
+.all-disks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.all-disk-row {
+  display: grid;
+  grid-template-columns: 1fr 160px 140px 160px;
+  align-items: center;
+  gap: 16px;
+  background: var(--label-paper);
+  border: 1.5px solid var(--perforation);
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+.all-disk-row:hover {
+  border-color: var(--ink);
+  box-shadow: 2px 2px 0 rgba(28, 26, 22, 0.14);
+}
+
+.all-disk-row-main {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.all-disk-row-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 15px;
+}
+
+.all-disk-row-match {
+  font-size: 11px;
+  color: var(--stamp-red);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.all-disk-row-meter,
+.all-disk-row-free {
+  font-family: 'Courier Prime', monospace;
+  font-size: 13px;
+}
+
+.all-disk-row-scan {
+  font-size: 11px;
+  color: var(--ink-soft);
+  text-align: right;
+}
+
+.inactive-toggle-btn {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  padding: 10px;
+  border: 1.5px dashed var(--ink-soft);
+  background: transparent;
+  color: var(--ink-soft);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+.inactive-toggle-btn:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.inactive-disks-list {
+  margin-top: 12px;
+  opacity: 0.7;
+}
+
+.inactive-disks-list .all-disk-row {
+  border-style: dashed;
+}
+
+/* --- Disk detay modalı --- */
+
+.disk-detail-panel {
+  width: 460px;
+}
+
+.disk-detail-notes {
+  font-size: 13px;
+  color: var(--stamp-red);
+  margin-bottom: 12px;
+}
+
+.disk-detail-meter {
+  font-family: 'Courier Prime', monospace;
+  font-size: 16px;
+}
+
+.disk-detail-free {
+  margin-top: 4px;
+  font-family: 'Courier Prime', monospace;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.disk-detail-scan {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.disk-detail-folders {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 420px;
+  overflow-y: auto;
+  margin-bottom: 16px;
+}
+
+/* Alt klasör kutusu — açılan klasörün çocukları (bkz. renderFolderTree) */
+.disk-detail-folder-children {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.disk-detail-folder-children[hidden] {
+  display: none;
+}
+
+.disk-detail-folder-row.is-expandable {
+  cursor: pointer;
+}
+
+.disk-detail-folder-toggle {
+  display: inline-block;
+  width: 1.2em;
+  color: var(--ink-soft);
+}
+
+.disk-detail-folder-empty {
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.disk-detail-folder-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 10px;
+  border: 1.5px solid var(--perforation);
+  background: #fff;
+  font-size: 13px;
+}
+
+.disk-detail-folder-row.is-matched {
+  border-color: var(--stamp-red);
+  background: #fdf1ef;
+}
+
+.disk-detail-folder-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.disk-detail-folder-size {
+  flex-shrink: 0;
+  font-family: 'Courier Prime', monospace;
+  color: var(--ink-soft);
+}
+
+/* --- Marka kimliği (Faz 9) --- */
+
+.brand-card {
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+  background: var(--label-paper);
+  border: 2px dashed var(--perforation);
+  box-shadow: 3px 3px 0 rgba(28, 26, 22, 0.14);
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.brand-preview {
+  flex-shrink: 0;
+}
+
+.brand-controls {
+  flex: 1;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-card-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.05em;
+  margin-bottom: 14px;
+}
+
+.brand-controls input[type='file'] {
+  margin-bottom: 12px;
+  font-family: 'Special Elite', monospace;
+  font-size: 12px;
+  color: var(--ink);
+}
+
+/* Etiket önizlemesi — ekranda küçük ölçek; PDF çıktısı kendi bağımsız
+   dokümanında (buildQrPdfHtml) ayrı bir <style> ile mm cinsinden basılır,
+   burada .tag/.tag-brand/.tag-name sınıf adları aynı ama çakışmaz. */
+.tag {
+  width: 140px;
+  min-height: 170px;
+  border: 1.5px dashed var(--perforation);
+  border-radius: 3px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #fff;
+}
+
+.tag-brand {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  max-width: 100%;
+}
+
+.tag-logo {
+  max-height: 26px;
+  max-width: 104px;
+  object-fit: contain;
+}
+
+.tag-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  text-align: center;
+}
+
+.tag img:not(.tag-logo) {
+  width: 84px;
+  height: 84px;
+}
+
+/* --- QR Kodları --- */
+
+.qr-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.qr-export-btn {
+  width: auto;
+  padding: 10px 18px;
+}
+
+.qr-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 16px;
+}
+
+.qr-tag {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background: var(--label-paper);
+  border: 2px dashed var(--perforation);
+  box-shadow: 3px 3px 0 rgba(28, 26, 22, 0.14);
+  padding: 14px;
+}
+
+.qr-tag-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.03em;
+}
+
+.qr-tag-image {
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qr-tag-image img {
+  width: 100%;
+  height: 100%;
+}
+
+.qr-tag-generate-btn {
+  width: 100%;
+  padding: 6px;
+  border: 1.5px dashed var(--ink);
+  background: transparent;
+  color: var(--ink);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+.qr-tag-generate-btn:hover {
+  background: var(--kraft);
+}
+
+.empty-state {
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+.disks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.disk-card {
+  background: var(--label-paper);
+  border: 2px dashed var(--perforation);
+  box-shadow: 3px 3px 0 rgba(28, 26, 22, 0.14);
+  padding: 16px;
+}
+
+.disk-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.disk-card-id {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+}
+
+.disk-card-status {
+  border: 1.5px solid var(--ink);
+  padding: 2px 7px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+.disk-card-meter {
+  margin-top: 12px;
+  font-family: 'Courier Prime', monospace;
+  font-size: 14px;
+}
+
+.disk-card-free {
+  margin-top: 6px;
+  font-family: 'Courier Prime', monospace;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.disk-card-total {
+  font-family: 'Courier Prime', monospace;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.disk-card-scan {
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.disk-card-speed {
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.disk-card-sync {
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--stamp-red);
+}
+
+.disk-card-match-btn {
+  width: 100%;
+  margin-top: 12px;
+  padding: 8px;
+  border: 1.5px dashed var(--ink);
+  background: transparent;
+  color: var(--ink);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+.disk-card-match-btn:hover {
+  background: var(--kraft);
+}
+
+.disk-card-rescan-btn {
+  width: 100%;
+  margin-top: 12px;
+  padding: 8px;
+  border: 1.5px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+.disk-card-rescan-btn:hover {
+  background: var(--kraft);
+}
+
+.disk-card-rescan-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* --- Match modal --- */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(28, 26, 22, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-overlay[hidden] {
+  display: none;
+}
+
+.modal-panel {
+  width: 360px;
+  max-height: 80vh;
+  overflow: auto;
+  background: var(--label-paper);
+  border: 2px solid var(--ink);
+  box-shadow: 5px 5px 0 rgba(28, 26, 22, 0.25);
+  padding: 24px;
+}
+
+.modal-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.05em;
+  margin-bottom: 16px;
+}
+
+.modal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.modal-list-empty {
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin-bottom: 12px;
+}
+
+.modal-list-item {
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  border: 1.5px solid var(--ink);
+  background: #fff;
+  font-family: 'Courier Prime', monospace;
+  font-size: 13px;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.modal-list-item:hover {
+  background: var(--kraft);
+}
+
+.modal-divider {
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--ink-soft);
+  text-align: center;
+  margin: 14px 0;
+  text-transform: uppercase;
+}
+
+/* --- Faz 16: kullanıcı yönetimi --- */
+.users-card {
+  background: var(--label-paper);
+  border: 2px dashed var(--perforation);
+  box-shadow: 3px 3px 0 rgba(28, 26, 22, 0.14);
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.users-invite-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.users-invite-row .text-input {
+  flex: 1 1 260px;
+  width: auto;
+}
+
+.users-invite-row .users-role-select {
+  flex: 0 0 150px;
+}
+
+.users-invite-btn {
+  width: auto;
+  padding-left: 22px;
+  padding-right: 22px;
+}
+
+.users-hint {
+  margin: 10px 0 0;
+}
+
+.users-section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.05em;
+  color: var(--ink-soft);
+  margin: 8px 0 8px;
+}
+
+.users-list {
+  margin-bottom: 24px;
+}
+
+.user-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--label-paper);
+  border: 1.5px solid var(--perforation);
+  padding: 10px 14px;
+  margin-bottom: 8px;
+}
+
+.user-row-email {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: 'Courier Prime', monospace;
+  font-size: 14px;
+}
+
+.user-row-tag {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  padding: 1px 6px;
+  border: 1.5px solid var(--ink-soft);
+  color: var(--ink-soft);
+}
+
+.user-row-role {
+  width: 130px;
+  padding: 6px 8px;
+}
+
+.user-row-btn {
+  padding: 6px 12px;
+  border: 1.5px solid var(--stamp-red);
+  background: transparent;
+  color: var(--stamp-red);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+.user-row-btn.confirm {
+  background: var(--stamp-red);
+  color: var(--label-paper);
+}
+
+.user-row-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.user-row-error {
+  flex-basis: 100%;
+  color: var(--stamp-red);
+  font-size: 12px;
+}
+
+.user-row {
+  flex-wrap: wrap;
+}
+
+/* Rol gizlemesi: bu sınıfların display kuralı [hidden]'ı eziyordu. */
+.tab-btn[hidden],
+.disk-card-match-btn[hidden] {
+  display: none;
+}

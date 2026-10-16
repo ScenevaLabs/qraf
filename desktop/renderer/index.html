@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>qRaf</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Special+Elite&family=Courier+Prime:wght@400;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="https://unpkg.com/qrcode-generator@1.4.4/qrcode.js"></script>
+</head>
+<body>
+  <div id="view-login" class="view">
+    <div class="login-card">
+      <div class="brand">
+        <svg viewBox="0 0 120 90" width="40" height="30" class="logo-mark">
+          <rect x="6" y="6" width="108" height="78" rx="3" fill="none" stroke="#1C1A16" stroke-width="6"></rect>
+          <circle cx="24" cy="24" r="8" fill="none" stroke="#1C1A16" stroke-width="6"></circle>
+          <path d="M78 16 L104 16 L104 42" fill="none" stroke="#1C1A16" stroke-width="7"></path>
+          <path d="M78 74 L104 74 L104 58" fill="none" stroke="#1C1A16" stroke-width="7"></path>
+        </svg>
+        <div class="wordmark">qRAF</div>
+      </div>
+
+      <div id="login-step-email">
+        <label class="field-label" for="email-input">EMAIL</label>
+        <input id="email-input" class="text-input" type="email" placeholder="admin@company.com" autocomplete="email" />
+        <button id="send-code-btn" class="btn-primary">SEND CODE</button>
+      </div>
+
+      <div id="login-step-code" hidden>
+        <div class="field-hint">Code sent to <span id="code-sent-email"></span>.</div>
+        <label class="field-label" for="code-input">6-DIGIT CODE</label>
+        <input id="code-input" class="text-input mono" type="text" inputmode="numeric" maxlength="6" placeholder="000000" />
+        <button id="verify-code-btn" class="btn-primary">SIGN IN</button>
+        <button id="back-to-email-btn" class="btn-link">Use a different email</button>
+      </div>
+
+      <div id="login-status" class="status-line" role="status"></div>
+    </div>
+  </div>
+
+  <div id="view-dashboard" class="view" hidden>
+    <div class="topbar">
+      <div class="brand">
+        <svg viewBox="0 0 120 90" width="26" height="20" class="logo-mark">
+          <rect x="6" y="6" width="108" height="78" rx="3" fill="none" stroke="#1C1A16" stroke-width="6"></rect>
+          <circle cx="24" cy="24" r="8" fill="none" stroke="#1C1A16" stroke-width="6"></circle>
+        </svg>
+        <div class="wordmark small">qRAF</div>
+      </div>
+      <div class="topbar-right">
+        <div id="disk-count" class="topbar-status"></div>
+        <div class="account-box">
+          <span id="account-email" class="account-email"></span>
+          <span id="account-role" class="account-role"></span>
+          <button id="sign-out-btn" class="sign-out-btn" type="button">SIGN OUT</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-bar">
+      <button id="tab-connected-btn" class="tab-btn tab-btn-active" type="button">CONNECTED DRIVES</button>
+      <button id="tab-all-btn" class="tab-btn" type="button">ALL DRIVES</button>
+      <button id="tab-qr-btn" class="tab-btn" type="button" hidden>QR CODES</button>
+      <button id="tab-users-btn" class="tab-btn" type="button" hidden>USERS</button>
+    </div>
+
+    <div id="panel-connected" class="dashboard-body">
+      <div id="disks-empty" class="empty-state">Looking for drives…</div>
+      <div id="disks-grid" class="disks-grid"></div>
+    </div>
+
+    <div id="panel-all" class="dashboard-body" hidden>
+      <div class="search-row">
+        <input id="all-disks-search" class="text-input" type="text" placeholder="Search by drive name or any project/folder on it…" />
+        <button id="all-disks-search-clear-btn" class="search-clear-btn" type="button" hidden>✕</button>
+      </div>
+      <div id="all-disks-empty" class="empty-state" hidden></div>
+      <div id="all-disks-list" class="all-disks-list"></div>
+
+      <button id="inactive-disks-toggle-btn" class="inactive-toggle-btn" type="button" hidden></button>
+      <div id="inactive-disks-list" class="all-disks-list inactive-disks-list" hidden></div>
+    </div>
+
+    <div id="panel-qr" class="dashboard-body" hidden>
+      <div class="brand-card">
+        <div class="brand-preview">
+          <div id="brand-preview-tag"></div>
+        </div>
+        <div class="brand-controls">
+          <div class="brand-card-title">BRAND IDENTITY</div>
+          <label class="field-label" for="brand-logo-input">UPLOAD LOGO (PNG/SVG/JPG)</label>
+          <input id="brand-logo-input" type="file" accept="image/png,image/svg+xml,image/jpeg" />
+          <div id="brand-upload-status" class="status-line"></div>
+          <button id="brand-approve-btn" class="btn-primary" type="button" disabled>APPROVE DESIGN</button>
+          <div id="brand-approve-status" class="field-hint"></div>
+        </div>
+      </div>
+
+      <div class="qr-toolbar">
+        <button id="qr-export-btn" class="btn-primary qr-export-btn">EXPORT ALL AS PDF</button>
+        <div id="qr-export-status" class="status-line"></div>
+      </div>
+      <div id="qr-empty" class="empty-state" hidden></div>
+      <div id="qr-grid" class="qr-grid"></div>
+    </div>
+
+    <!-- Faz 16: kullanıcı yönetimi — yalnız admin görür (bkz. applyRole) -->
+    <div id="panel-users" class="dashboard-body" hidden>
+      <div class="users-card">
+        <div class="brand-card-title">INVITE A USER</div>
+        <div class="users-invite-row">
+          <input id="invite-email-input" class="text-input" type="email" placeholder="employee@company.com" autocomplete="off" />
+          <select id="invite-role-select" class="text-input users-role-select">
+            <option value="standart">USER</option>
+            <option value="admin">ADMIN</option>
+          </select>
+          <button id="invite-btn" class="btn-primary users-invite-btn" type="button">INVITE</button>
+        </div>
+        <div id="invite-status" class="status-line"></div>
+        <div class="field-hint users-hint">
+          The invited person installs qRaf and signs in with this email; their account is created with the 6-digit code sent to them.
+          <b>USER</b> can only view drives. <b>ADMIN</b> adds, renames and retires drives and manages users.
+        </div>
+      </div>
+
+      <div class="users-section-title">USERS</div>
+      <div id="users-status" class="status-line"></div>
+      <div id="users-list" class="users-list"></div>
+
+      <div id="invites-title" class="users-section-title" hidden>PENDING INVITATIONS</div>
+      <div id="invites-list" class="users-list"></div>
+    </div>
+  </div>
+
+  <template id="all-disk-row-template">
+    <div class="all-disk-row" role="button" tabindex="0">
+      <div class="all-disk-row-main">
+        <div class="all-disk-row-name"></div>
+        <div class="all-disk-row-match" hidden></div>
+      </div>
+      <div class="all-disk-row-meter"></div>
+      <div class="all-disk-row-free"></div>
+      <div class="all-disk-row-scan"></div>
+    </div>
+  </template>
+
+  <template id="qr-tag-template">
+    <div class="qr-tag">
+      <div class="qr-tag-name"></div>
+      <div class="qr-tag-image"></div>
+      <button class="qr-tag-generate-btn" type="button" hidden>CREATE QR</button>
+    </div>
+  </template>
+
+  <template id="disk-card-template">
+    <div class="disk-card">
+      <div class="disk-card-head">
+        <div class="disk-card-id"></div>
+        <div class="disk-card-status"></div>
+      </div>
+      <div class="disk-card-meter"></div>
+      <div class="disk-card-free"></div>
+      <div class="disk-card-total"></div>
+      <div class="disk-card-scan"></div>
+      <div class="disk-card-speed"></div>
+      <div class="disk-card-sync"></div>
+      <button class="disk-card-match-btn" type="button" hidden>LINK DRIVE</button>
+      <button class="disk-card-rescan-btn" type="button" hidden>SCAN NOW</button>
+    </div>
+  </template>
+
+  <div id="disk-detail-modal" class="modal-overlay" hidden>
+    <div class="modal-panel disk-detail-panel">
+      <div class="modal-title" id="disk-detail-name"></div>
+      <div id="disk-detail-notes" class="disk-detail-notes" hidden></div>
+      <div id="disk-detail-meter" class="disk-detail-meter"></div>
+      <div id="disk-detail-free" class="disk-detail-free"></div>
+      <div id="disk-detail-scan" class="disk-detail-scan"></div>
+      <div id="disk-detail-speed" class="disk-detail-scan" hidden></div>
+      <div class="modal-divider">TOP-LEVEL FOLDERS</div>
+      <div id="disk-detail-folders" class="disk-detail-folders"></div>
+      <button id="disk-detail-status-btn" class="disk-card-match-btn"></button>
+      <button id="disk-detail-close-btn" class="btn-link">Close</button>
+    </div>
+  </div>
+
+  <div id="match-modal" class="modal-overlay" hidden>
+    <div class="modal-panel">
+      <div class="modal-title">LINK DRIVE</div>
+      <label class="field-label" for="match-modal-qr-input">SCAN THE QR CODE (OR TYPE IT)</label>
+      <input id="match-modal-qr-input" class="text-input mono" type="text" placeholder="qraf:…" autocomplete="off" />
+      <div class="modal-divider">or pick an existing record</div>
+      <div id="match-modal-list" class="modal-list"></div>
+      <div class="modal-divider">or create a new record</div>
+      <input id="match-modal-name" class="text-input" type="text" placeholder="Drive name (e.g. PROD-014)" />
+      <button id="match-modal-create-btn" class="btn-primary">CREATE NEW RECORD</button>
+      <button id="match-modal-cancel-btn" class="btn-link">Cancel</button>
+      <div id="match-modal-status" class="status-line"></div>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

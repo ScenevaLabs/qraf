@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="36 76 440 360">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="2" result="noise" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="6"/>
+    </filter>
+  </defs>
+
+  <!-- label card, keskin köşeli, hafif döndürülmüş -->
+  <g transform="rotate(-2 256 256)">
+    <rect x="56" y="96" width="400" height="320" fill="#F3EEDF" stroke="#1C1A16" stroke-width="10" filter="url(#rough)"/>
+
+    <!-- rope hole, top-left -->
+    <circle cx="104" cy="144" r="18" fill="#D9CBA6" stroke="#1C1A16" stroke-width="8"/>
+
+    <!-- QR finder-style corner marks, top-right -->
+    <g fill="#1C1A16">
+      <rect x="366" y="128" width="52" height="52"/>
+      <rect x="380" y="142" width="24" height="24" fill="#F3EEDF"/>
+    </g>
+
+    <!-- perforation line above wordmark -->
+    <g stroke="#B5A780" stroke-width="4" stroke-dasharray="10 10">
+      <line x1="80" y1="330" x2="432" y2="330"/>
+    </g>
+
+    <!-- wordmark stamp -->
+    <text x="256" y="300" text-anchor="middle"
+          font-family="Impact, 'Arial Narrow Bold', sans-serif"
+          font-size="128" letter-spacing="4"
+          fill="#1C1A16" filter="url(#rough)">qRAF</text>
+
+    <!-- red damga accent, bottom-right, slightly rotated -->
+    <g transform="rotate(-8 388 380)">
+      <rect x="330" y="358" width="116" height="44" fill="none" stroke="#A3362A" stroke-width="7"/>
+      <text x="388" y="389" text-anchor="middle"
+            font-family="Impact, 'Arial Narrow Bold', sans-serif"
+            font-size="26" letter-spacing="2"
+            fill="#A3362A">RAF</text>
+    </g>
+  </g>
+</svg>
