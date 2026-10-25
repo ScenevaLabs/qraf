@@ -50,7 +50,7 @@ describe('naturalDiskCompare', () => {
 describe('matchingFolders', () => {
   const d = disk('ARC MASTER', [
     {
-      name: 'NIGHT SHIFT',
+      name: 'LATE SHIFT',
       sizeBytes: 5e12,
       children: [
         {
@@ -67,8 +67,8 @@ describe('matchingFolders', () => {
   ]);
 
   test('bölüm numarasıyla tam yolu bulur', () => {
-    const m = matchingFolders(d, 'night shift 13');
-    expect(m.map((x) => x.path.join(' › '))).toEqual(['NIGHT SHIFT › 2026.08.25 › BOLUM_13']);
+    const m = matchingFolders(d, 'late shift 13');
+    expect(m.map((x) => x.path.join(' › '))).toEqual(['LATE SHIFT › 2026.08.25 › BOLUM_13']);
   });
 
   test('aksan ve büyük/küçük harf duyarsız', () => {

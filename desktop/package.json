@@ -6,6 +6,7 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
+    "vendor": "node vendor.mjs",
     "dist:win": "electron-builder --win",
     "dist:mac": "electron-builder --mac"
   },
@@ -41,11 +42,13 @@
     "systeminformation": "^5.33.1"
   },
   "devDependencies": {
-    "electron": "^33.2.0",
-    "electron-builder": "^25.1.8",
-    "playwright-core": "^1.62.1"
+    "@supabase/supabase-js": "2.118.0",
+    "electron": "^44.9.3",
+    "electron-builder": "^26.18.0",
+    "playwright-core": "^1.62.1",
+    "qrcode-generator": "1.4.4"
   },
   "allowScripts": {
-    "electron@33.4.11": true
+    "electron@44.9.3": true
   }
 }

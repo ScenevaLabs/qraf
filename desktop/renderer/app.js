@@ -471,7 +471,7 @@ function visibleFolders(folders) {
 // top_level_folders artık bir ağaç: her klasörün altında taramada
 // kaydedilen alt klasörler `children` olarak duruyor (bkz. main.js →
 // FOLDER_TREE_DEPTH). Arama için her klasör, diskin kökünden itibaren
-// tam yoluyla ("NIGHT SHIFT / 2026.08.25 / BOLUM_13") düzleştirilir.
+// tam yoluyla ("LATE SHIFT / 2026.08.25 / BOLUM_13") düzleştirilir.
 function flattenFolderTree(folders, parentPath = []) {
   const out = [];
   for (const folder of visibleFolders(folders)) {
@@ -487,7 +487,7 @@ function folderPathKey(folderPath) {
 }
 
 // Sorgu boşluklardan kelimelere bölünür ve HER kelime klasörün tam
-// yolunda aranır — "night shift 13" sorgusundaki "night" kökteki
+// yolunda aranır — "late shift 13" sorgusundaki "late" kökteki
 // proje klasöründe, "13" ise alt klasördeki "BOLUM_13"te bulunabilir.
 // Yalnız rakamdan oluşan kelimeler sayı olarak eşleşir: "13" "BOLUM_13"ü
 // bulur ama "130"u bulmaz, "4" "BOLUM_04"ü de bulur. "2026.08" gibi
@@ -523,8 +523,8 @@ function isEpisodeMatch(folderName, tokens) {
 
 // Diskin klasör ağacında sorguyla eşleşen klasörleri döndürür. Bir klasör
 // eşleştiyse altındaki klasörler ayrıca listelenmez (hepsi zaten o
-// klasörün içinde) — "night shift" araması 200 alt klasör değil,
-// tek bir "NIGHT SHIFT" sonucu verir.
+// klasörün içinde) — "late shift" araması 200 alt klasör değil,
+// tek bir "LATE SHIFT" sonucu verir.
 function matchingFolders(disk, q) {
   const tokens = searchTokens(q);
   if (tokens.length === 0) return [];

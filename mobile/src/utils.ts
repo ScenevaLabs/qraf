@@ -127,7 +127,7 @@ function isEpisodeMatch(folderName: string, tokens: string[]): boolean {
     });
 }
 
-// Diskin klasör ağacında ("NIGHT SHIFT › 2026.08.25 › BOLUM_13")
+// Diskin klasör ağacında ("LATE SHIFT › 2026.08.25 › BOLUM_13")
 // sorguyla eşleşen klasörleri bulur; eşleşen bir klasörün altındakiler
 // ayrıca listelenmez, sorgudaki sayı bölüm numarası olarak geçiyorsa
 // yalnız o klasörler döner.

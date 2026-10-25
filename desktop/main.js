@@ -18,13 +18,24 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
       nodeIntegration: false,
+      sandbox: true,
     },
   });
   mainWindow.loadFile(path.join(__dirname, 'renderer', 'index.html'));
+  lockNavigation(mainWindow);
+}
+
+// Uygulama penceresi yalnız kendi index.html'ini gösterir: yeni pencere
+// açılamaz, başka bir adrese gidilemez (renderer'a bir şekilde zararlı
+// içerik girse bile window.qraf köprüsü dış bir sayfaya geçmesin diye).
+function lockNavigation(win) {
+  win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
+  win.webContents.on('will-navigate', (event) => event.preventDefault());
+  win.webContents.on('will-redirect', (event) => event.preventDefault());
 }
 
 // Klasör ağacında kaç seviye aşağıya kadar alt klasör kaydedileceği
-// (kök = 1). Night Shift gibi projelerde bölümler
+// (kök = 1). Late Shift gibi projelerde bölümler
 // "PROJE / tarih / BOLUM_13 / GORUNTULER" şeklinde 3–4. seviyede
 // duruyor; daha derini (tek tek kamera kartları vb.) aramada gürültü
 // ve veritabanında gereksiz hacim yaratıyor. INTENT.md → Riskler:
@@ -380,7 +391,12 @@ ipcMain.handle('disks:speedTest', (_event, mountpoint) => speedTestDisk(mountpoi
 // yükleyip Electron'un printToPDF'iyle basar, sonra kullanıcıya
 // kaydetme diyaloğu gösterir.
 ipcMain.handle('pdf:export', async (_event, html) => {
-  const pdfWindow = new BrowserWindow({ show: false, webPreferences: { offscreen: true } });
+  // Etiket HTML'i yalnız işaretleme + stil; betik çalışmasına gerek yok.
+  const pdfWindow = new BrowserWindow({
+    show: false,
+    webPreferences: { offscreen: true, javascript: false, sandbox: true },
+  });
+  pdfWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
   try {
     await pdfWindow.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(html)}`);
     const pdfBuffer = await pdfWindow.webContents.printToPDF({

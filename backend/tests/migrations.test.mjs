@@ -15,10 +15,11 @@ const bad = (m) => { failed++; console.log('  ✗', m); };
 await db.exec(`
   create role anon nologin; create role authenticated nologin;
   create schema auth;
-  create table auth.users (id uuid primary key default gen_random_uuid(), email text, raw_user_meta_data jsonb default '{}');
+  create table auth.users (id uuid primary key default gen_random_uuid(), email text, raw_user_meta_data jsonb default '{}', encrypted_password text, email_confirmed_at timestamptz);
   create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;
+  create function auth.jwt() returns jsonb language sql stable as $$ select coalesce(nullif(current_setting('request.jwt.claims', true), ''), '{}')::jsonb $$;
   grant usage on schema auth to authenticated, anon;
-  grant execute on function auth.uid() to authenticated, anon;
+  grant execute on function auth.uid(), auth.jwt() to authenticated, anon;
   create schema storage;
   create table storage.buckets (id text primary key, name text, public boolean);
   create table storage.objects (id uuid default gen_random_uuid(), bucket_id text, name text, owner uuid);
@@ -27,6 +28,10 @@ await db.exec(`
 `);
 
 const files = fs.readdirSync(dir).filter((f) => f.endsWith('.sql')).sort();
+// Faz 16 migration'ı canlı veriyle (aşağıdaki taklit) çalıştırılır;
+// sonrasındakiler onun üzerine uygulanır.
+const faz16 = files.indexOf('20261013120000_user_management.sql');
+const after = files.splice(faz16 + 1);
 const last = files.pop();
 for (const f of files) {
   await db.exec(fs.readFileSync(path.join(dir, f), 'utf8'));
@@ -36,16 +41,22 @@ for (const f of files) {
 const admin = '00000000-0000-0000-0000-00000000000a';
 const std = '00000000-0000-0000-0000-00000000000b';
 await db.exec(`
-  insert into auth.users (id, email) values ('${admin}', 'yonetici@example.com'), ('${std}', 'ekip@example.com');
+  insert into auth.users (id, email, email_confirmed_at) values ('${admin}', 'yonetici@example.com', now()), ('${std}', 'ekip@example.com', now());
   update public.profiles set role = 'admin' where id = '${admin}';
   insert into public.disks (name, org_id) select '1. Disk', id from public.organizations;
 `);
 console.log('Faz 16 migration:', last);
 await db.exec(fs.readFileSync(path.join(dir, last), 'utf8'));
+for (const f of after) {
+  console.log('Sonraki migration:', f);
+  await db.exec(fs.readFileSync(path.join(dir, f), 'utf8'));
+}
 
-async function as(uid, fn) {
-  await db.exec(`set role authenticated; select set_config('request.jwt.claim.sub', '${uid}', false);`);
-  try { return await fn(); } finally { await db.exec(`reset role; select set_config('request.jwt.claim.sub', '', false);`); }
+// Supabase gibi: auth.uid() = sub, auth.jwt() = tüm claim'ler (amr = giriş yöntemi).
+async function as(uid, fn, method = 'otp') {
+  const claims = JSON.stringify({ sub: uid, amr: [{ method, timestamp: 0 }] });
+  await db.exec(`set role authenticated; select set_config('request.jwt.claim.sub', '${uid}', false), set_config('request.jwt.claims', '${claims}', false);`);
+  try { return await fn(); } finally { await db.exec(`reset role; select set_config('request.jwt.claim.sub', '', false), set_config('request.jwt.claims', '', false);`); }
 }
 async function fails(sql) { try { await db.exec(sql); return null; } catch (e) { return e.message; } }
 
@@ -75,7 +86,7 @@ const seen = await as(std, () => db.query(`select count(*)::int c from public.in
 seen.rows[0].c === 0 ? ok('standart davetleri göremez') : bad('standart davetleri görüyor');
 
 console.log('Davetli kayıt');
-await db.exec(`insert into auth.users (email) values ('YENI@example.com ')`);
+await db.exec(`insert into auth.users (email, email_confirmed_at) values ('YENI@example.com ', now())`);
 const p = (await db.query(`select p.role, p.email, p.org_id is not null o from public.profiles p join auth.users u on u.id = p.id where u.email like 'YENI%'`)).rows[0];
 p && p.role === 'standart' && p.email === 'yeni@example.com' && p.o ? ok('profil davetteki rol ve org ile açıldı (büyük harf/boşluk tolere)') : bad(JSON.stringify(p));
 (await db.query(`select count(*)::int c from public.invitations`)).rows[0].c === 0 ? ok('davet kullanıldı, silindi') : bad('davet duruyor');
@@ -95,6 +106,30 @@ await as(admin, () => db.exec(`update public.profiles set role='admin' where id=
 await as(admin, () => db.exec(`update public.profiles set role='standart' where id='${newId}'`));
 const e4 = await as(admin, () => fails(`update public.profiles set role='standart' where id='${admin}'`));
 e4 && e4.includes('last admin') ? ok('son admin kendini düşüremez') : bad('son admin düşürüldü: ' + e4);
+
+console.log('Davetli e-postaya şifreyle önden kayıt');
+await as(admin, () => db.exec(`insert into public.invitations (email, role) values ('patron@example.com', 'admin')`));
+// Saldırgan şifreli signup yapar: davetin rolünü alır ama oturumu şifreyle.
+await db.exec(`insert into auth.users (email, encrypted_password, email_confirmed_at) values ('patron@example.com', 'x', now())`);
+const atk = (await db.query(`select id from auth.users where email='patron@example.com'`)).rows[0].id;
+const atkAdmin = await as(atk, () => db.query(`select public.is_admin() a, public.current_org_id() o`), 'password');
+!atkAdmin.rows[0].a && atkAdmin.rows[0].o === null ? ok('şifreli oturum: admin değil, organizasyonu yok') : bad(JSON.stringify(atkAdmin.rows[0]));
+const atkDisks = await as(atk, () => db.query(`select count(*)::int c from public.disks`), 'password');
+atkDisks.rows[0].c === 0 ? ok('şifreli oturum diskleri göremez') : bad('şifreli oturum diskleri görüyor');
+const atkInv = await as(atk, () => fails(`insert into public.invitations (email) values ('kotu@x.com')`), 'password');
+atkInv ? ok('şifreli oturum davet ekleyemez') : bad('şifreli oturum davet ekledi');
+const atkDel = await as(atk, () => fails(`select public.admin_remove_user('${std}')`), 'password');
+atkDel ? ok('şifreli oturum kullanıcı çıkaramaz') : bad('şifreli oturum kullanıcı çıkardı');
+// Aynı hesap e-posta koduyla (gerçek kişi) → yetki normal.
+const otpAdmin = await as(atk, () => db.query(`select public.is_admin() a`));
+otpAdmin.rows[0].a ? ok('aynı hesap kodla girince admin (gerçek davetli etkilenmez)') : bad('kodla giriş yetkisiz kaldı');
+await db.exec(`update auth.users set email_confirmed_at = null where id = '${atk}'`);
+const unconf = await as(atk, () => db.query(`select public.is_admin() a, public.current_org_id() o`));
+!unconf.rows[0].a && unconf.rows[0].o === null ? ok('e-postası doğrulanmamış hesap yetkisiz') : bad(JSON.stringify(unconf.rows[0]));
+await as(admin, () => db.exec(`select public.admin_remove_user('${atk}')`));
+const e8 = await fails(`set role anon; select public.session_verified()`);
+await db.exec('reset role');
+e8 ? ok('anon session_verified() çağıramaz') : bad('anon session_verified() çağırdı');
 
 console.log('Çıkarma');
 const e5 = await as(std, () => fails(`select public.admin_remove_user('${newId}')`));

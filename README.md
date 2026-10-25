@@ -118,7 +118,10 @@ invite everyone else from the app's *Users* tab.
 **4. Sign-in email.** In the Supabase dashboard:
 
 - *Authentication → Providers → Email:* set **Email OTP Length** to **6**. Keep new user
-  sign-ups enabled; the database already rejects anyone without an invitation.
+  sign-ups enabled; the database already rejects anyone without an invitation. Keep
+  **Confirm email** on as well. qRaf only signs in with the emailed code: the database grants
+  no access to a session opened with a password or to an unconfirmed email address, so a
+  stranger who registers a pending invitation's address with a password gets nothing.
 - *Authentication → Emails → SMTP Settings:* connect your own mail server. Supabase's
   built-in sender is limited to a few emails per hour, and templates can only be edited with
   custom SMTP.
@@ -202,7 +205,7 @@ adlarını, boyutları, boş alanı ve hız ölçümünü kaydeder.
 
 **Kurulum:** yukarıdaki *Setup* adımlarını sırayla izle: Supabase projesi aç, migration'ları
 uygula, SQL Editor'de şirket adını yaz ve ilk admini davet et, e-posta ayarlarını yap (OTP 6
-hane, özel SMTP, şablonlarda `{{ .Token }}`), URL ve publishable anahtarı iki config dosyasına
+hane, özel SMTP, şablonlarda `{{ .Token }}`, **Confirm email** açık), URL ve publishable anahtarı iki config dosyasına
 yaz, masaüstü ve Android uygulamasını derle. Secret anahtarı hiçbir dosyaya yazma.
 
 **Lisans:** [GNU AGPL-3.0](LICENSE). Bir Sceneva Labs projesi.

@@ -13,7 +13,7 @@ const DISK: DiskRow = {
   qr_code_value: null,
   top_level_folders: [
     {
-      name: 'NIGHT SHIFT',
+      name: 'LATE SHIFT',
       sizeBytes: 5e12,
       children: [{ name: '2026.08.25', sizeBytes: 1e12, children: [{ name: 'BOLUM_13', sizeBytes: 4e11 }] }],
     },
@@ -30,10 +30,10 @@ const DISK: DiskRow = {
 describe('DiskDetailScreen', () => {
   test('üst klasörler kapalı gelir, dokununca alt klasörler açılır', async () => {
     const r = await render(<DiskDetailScreen disk={DISK} onBack={() => {}} />);
-    expect(texts(r.root)).toContain('NIGHT SHIFT');
+    expect(texts(r.root)).toContain('LATE SHIFT');
     expect(texts(r.root)).not.toContain('2026.08.25');
 
-    const row = pressableWithText(r.root, 'NIGHT SHIFT');
+    const row = pressableWithText(r.root, 'LATE SHIFT');
     await act(async () => row.props.onPress());
     expect(texts(r.root)).toContain('2026.08.25');
 
@@ -43,11 +43,11 @@ describe('DiskDetailScreen', () => {
 
   test('aramadan gelince bulunan klasöre kadar açık gelir', async () => {
     const r = await render(
-      <DiskDetailScreen disk={DISK} focusPath={['NIGHT SHIFT', '2026.08.25', 'BOLUM_13']} onBack={() => {}} />
+      <DiskDetailScreen disk={DISK} focusPath={['LATE SHIFT', '2026.08.25', 'BOLUM_13']} onBack={() => {}} />
     );
     const all = texts(r.root);
     expect(all).toContain('BOLUM_13');
-    expect(all).toContain('NIGHT SHIFT › 2026.08.25 › BOLUM_13');
+    expect(all).toContain('LATE SHIFT › 2026.08.25 › BOLUM_13');
   });
 
   test('son tarama ve hızlar görünür', async () => {
@@ -122,19 +122,19 @@ describe('AllDisksScreen', () => {
 
   test('arama kullanılmayan diskte eşleşirse bölüm kendiliğinden açılır', async () => {
     (globalThis as any).__mockDisks = [{ ...DISK, status: 'inactive' }];
-    const r = await render(<AllDisksScreen initialQuery="night 13" onSelectDisk={() => {}} onBack={() => {}} />);
-    expect(texts(r.root)).toContain('NIGHT SHIFT › 2026.08.25 › BOLUM_13');
+    const r = await render(<AllDisksScreen initialQuery="late 13" onSelectDisk={() => {}} onBack={() => {}} />);
+    expect(texts(r.root)).toContain('LATE SHIFT › 2026.08.25 › BOLUM_13');
   });
 
   test('aramada bulunan klasöre dokununca disk + klasör yolu + arama metni gider', async () => {
     const onSelect = jest.fn();
-    const r = await render(<AllDisksScreen initialQuery="night 13" onSelectDisk={onSelect} onBack={() => {}} />);
-    const match = pressableWithText(r.root, 'NIGHT SHIFT › 2026.08.25 › BOLUM_13');
+    const r = await render(<AllDisksScreen initialQuery="late 13" onSelectDisk={onSelect} onBack={() => {}} />);
+    const match = pressableWithText(r.root, 'LATE SHIFT › 2026.08.25 › BOLUM_13');
     await act(async () => match.props.onPress());
     expect(onSelect).toHaveBeenCalledWith(
       expect.objectContaining({ id: 'd1' }),
-      ['NIGHT SHIFT', '2026.08.25', 'BOLUM_13'],
-      'night 13'
+      ['LATE SHIFT', '2026.08.25', 'BOLUM_13'],
+      'late 13'
     );
   });
 });

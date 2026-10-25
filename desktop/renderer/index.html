@@ -2,6 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
+  <!-- Scripts load only from the app's own files (incl. renderer/vendor/);
+       network access only to Supabase. Self-hosting Supabase on your own
+       domain? Add it to connect-src and img-src. -->
+  <meta
+    http-equiv="Content-Security-Policy"
+    content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src https://*.supabase.co wss://*.supabase.co; base-uri 'none'; form-action 'none'; object-src 'none'"
+  />
   <title>qRaf</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link
@@ -9,8 +16,8 @@
     rel="stylesheet"
   />
   <link rel="stylesheet" href="styles.css" />
-  <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="https://unpkg.com/qrcode-generator@1.4.4/qrcode.js"></script>
+  <script src="vendor/supabase.js"></script>
+  <script src="vendor/qrcode.js"></script>
 </head>
 <body>
   <div id="view-login" class="view">
