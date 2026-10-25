@@ -1054,7 +1054,7 @@ inviteEmailInput.addEventListener('keydown', (event) => {
 // "Depo Etiketi" şablonunda, sadece logo alanı değişken) önizleyip
 // onaylayabiliyor. Onaylanmadan önce (ya da hiç logo yüklenmemişse)
 // qRaf'ın kendi SVG mührü kullanılmaya devam eder — font özelleştirme
-// kapsam dışı (bkz. INTENT.md).
+// kapsam dışı.
 
 function orgLogoUrl() {
   if (!currentOrg || !currentOrg.logo_path) return null;
@@ -1094,7 +1094,17 @@ function renderBrandSection() {
 brandLogoInput.addEventListener('change', async () => {
   const file = brandLogoInput.files[0];
   if (!file || !currentOrg) return;
-  const ext = file.name.split('.').pop().toLowerCase();
+  // Bucket sunucu tarafında da yalnız PNG/JPEG ve 2 MB kabul ediyor
+  // (migration 20261026120000); burada kullanıcıya erkenden söylenir.
+  const ext = { 'image/png': 'png', 'image/jpeg': 'jpg' }[file.type];
+  if (!ext) {
+    brandUploadStatus.textContent = 'Only PNG or JPG logos can be uploaded.';
+    return;
+  }
+  if (file.size > 2 * 1024 * 1024) {
+    brandUploadStatus.textContent = 'The logo can be at most 2 MB.';
+    return;
+  }
   const path = `${currentOrg.id}/logo.${ext}`;
   brandUploadStatus.textContent = 'Loading…';
   const { error: uploadError } = await supabaseClient.storage
@@ -1324,7 +1334,7 @@ function buildDiskCard(disk, mapping) {
 // Bu oturumda alınmış son taramalar (stableId → tarama sözü). Yeni bir
 // disk takıldığında ya da bir disk eşleştirildiğinde liste yeniden
 // çiziliyor; önceden her seferinde TÜM bağlı diskler baştan taranıyordu
-// (bkz. MEMORY.md, 5 Ekim 2026). Artık yalnızca yeni takılan disk
+// (5 Ekim 2026). Artık yalnızca yeni takılan disk
 // taranıyor; eşleştirilen disk mevcut taramayla hemen senkronlanıyor.
 // "SCAN NOW" (force) her zaman taze tarama yapar. Çıkarılan diskin
 // kaydı silinir — tekrar takıldığında baştan taranır.
@@ -1332,7 +1342,7 @@ const scanCache = new Map();
 
 // Bu takılışta hızı ölçülmüş diskler (stableId). Disk her takıldığında
 // hız bir kez ölçülür — kullanıcı hızı diskin güncel sağlık göstergesi
-// olarak izliyor (bkz. MEMORY.md, 5 Ekim 2026). "SCAN NOW" yeniden
+// olarak izliyor (5 Ekim 2026). "SCAN NOW" yeniden
 // ölçmez; disk çıkarılınca kayıt silinir, tekrar takılınca yine ölçülür.
 const speedTested = new Set();
 
@@ -1491,7 +1501,7 @@ window.qraf.onDisksChanged(() => {
   if (!viewDashboard.hidden) refreshDisks();
 });
 
-// Not — tasarım kararı (bkz. PLAN.md Faz 11, MEMORY.md 5 Ekim 2026):
+// Not — tasarım kararı (5 Ekim 2026):
 // tam klasör taraması (her dosyayı stat'layan recursive işlem) disk
 // takıldığında, uygulama açıldığında, "SCAN NOW"ya basıldığında ve
 // takılı diskler için SAAT BAŞI çalışır. Önceden dakikada bir tüm

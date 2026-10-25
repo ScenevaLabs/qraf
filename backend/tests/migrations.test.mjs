@@ -21,7 +21,7 @@ await db.exec(`
   grant usage on schema auth to authenticated, anon;
   grant execute on function auth.uid(), auth.jwt() to authenticated, anon;
   create schema storage;
-  create table storage.buckets (id text primary key, name text, public boolean);
+  create table storage.buckets (id text primary key, name text, public boolean, allowed_mime_types text[], file_size_limit bigint);
   create table storage.objects (id uuid default gen_random_uuid(), bucket_id text, name text, owner uuid);
   alter table storage.objects enable row level security;
   create function storage.foldername(name text) returns text[] language sql as $$ select string_to_array(name, '/') $$;
@@ -130,6 +130,11 @@ await as(admin, () => db.exec(`select public.admin_remove_user('${atk}')`));
 const e8 = await fails(`set role anon; select public.session_verified()`);
 await db.exec('reset role');
 e8 ? ok('anon session_verified() çağıramaz') : bad('anon session_verified() çağırdı');
+
+console.log('Logo bucket sınırları');
+const bucket = (await db.query(`select allowed_mime_types, file_size_limit::int l from storage.buckets where id = 'org-logos'`)).rows[0];
+JSON.stringify(bucket.allowed_mime_types) === '["image/png","image/jpeg"]' && bucket.l === 2097152
+  ? ok('org-logos yalnız PNG/JPEG, en fazla 2 MB') : bad(JSON.stringify(bucket));
 
 console.log('Çıkarma');
 const e5 = await as(std, () => fails(`select public.admin_remove_user('${newId}')`));

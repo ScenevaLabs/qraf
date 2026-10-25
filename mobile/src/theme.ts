@@ -1,7 +1,7 @@
-// "Depo Etiketi" görsel kimliği — bkz. qRaf/DESIGN.md.
+// "Depo Etiketi" görsel kimliği.
 // Masaüstündeki gibi Bebas Neue/Special Elite/Courier Prime fontları
 // bu ilk sürümde bundle edilmedi (ayrı bir görsel cila adımı olarak
-// PLAN.md'de not edildi) — sistem fontlarıyla aynı kalın/mono karakter
+// bırakıldı) — sistem fontlarıyla aynı kalın/mono karakter
 // korunuyor.
 export const colors = {
   kraft: '#D9CBA6',

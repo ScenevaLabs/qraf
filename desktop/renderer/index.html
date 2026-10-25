@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <!-- Scripts load only from the app's own files (incl. renderer/vendor/);
-       network access only to Supabase. Self-hosting Supabase on your own
-       domain? Add it to connect-src and img-src. -->
+       network access only to Supabase. You can narrow *.supabase.co to
+       your own project's host; self-hosting Supabase on your own domain?
+       Add it to connect-src and img-src. -->
   <meta
     http-equiv="Content-Security-Policy"
     content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src https://*.supabase.co wss://*.supabase.co; base-uri 'none'; form-action 'none'; object-src 'none'"
@@ -100,8 +101,8 @@
         </div>
         <div class="brand-controls">
           <div class="brand-card-title">BRAND IDENTITY</div>
-          <label class="field-label" for="brand-logo-input">UPLOAD LOGO (PNG/SVG/JPG)</label>
-          <input id="brand-logo-input" type="file" accept="image/png,image/svg+xml,image/jpeg" />
+          <label class="field-label" for="brand-logo-input">UPLOAD LOGO (PNG/JPG)</label>
+          <input id="brand-logo-input" type="file" accept="image/png,image/jpeg" />
           <div id="brand-upload-status" class="status-line"></div>
           <button id="brand-approve-btn" class="btn-primary" type="button" disabled>APPROVE DESIGN</button>
           <div id="brand-approve-status" class="field-hint"></div>

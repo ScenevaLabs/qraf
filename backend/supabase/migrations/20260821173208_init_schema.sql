@@ -15,7 +15,7 @@ alter table public.profiles enable row level security;
 
 -- Yeni bir auth.users kaydı oluşturulduğunda otomatik olarak profiles satırı
 -- açar (varsayılan rol: standart). İlk admin, bu satır oluştuktan sonra elle
--- 'admin' olarak güncellenir (bkz. Faz 2 PLAN.md).
+-- 'admin' olarak güncellenir.
 create function public.handle_new_user()
 returns trigger
 language plpgsql

@@ -117,7 +117,8 @@ invite everyone else from the app's *Users* tab.
 
 **4. Sign-in email.** In the Supabase dashboard:
 
-- *Authentication → Providers → Email:* set **Email OTP Length** to **6**. Keep new user
+- *Authentication → Providers → Email:* set **Email OTP Length** to **6** and **Email OTP
+  Expiration** to **600** seconds (a short window leaves less time to guess a code). Keep new user
   sign-ups enabled; the database already rejects anyone without an invitation. Keep
   **Confirm email** on as well. qRaf only signs in with the emailed code: the database grants
   no access to a session opened with a password or to an unconfirmed email address, so a
@@ -146,6 +147,12 @@ npm start            # development
 npm run dist:mac     # macOS .dmg
 npm run dist:win     # Windows installer
 ```
+
+The build hardens the Electron runtime (fuses: no `ELECTRON_RUN_AS_NODE`, no `NODE_OPTIONS`
+or `--inspect`, app loaded only from its integrity-checked archive). The installers it
+produces are unsigned; before you distribute them to other computers, sign them with your
+own code-signing certificate (Apple Developer ID on macOS, Authenticode on Windows) so users
+can tell a genuine copy from a tampered one.
 
 **7. Android app.**
 
@@ -205,7 +212,7 @@ adlarını, boyutları, boş alanı ve hız ölçümünü kaydeder.
 
 **Kurulum:** yukarıdaki *Setup* adımlarını sırayla izle: Supabase projesi aç, migration'ları
 uygula, SQL Editor'de şirket adını yaz ve ilk admini davet et, e-posta ayarlarını yap (OTP 6
-hane, özel SMTP, şablonlarda `{{ .Token }}`, **Confirm email** açık), URL ve publishable anahtarı iki config dosyasına
+hane ve 600 sn geçerlilik, özel SMTP, şablonlarda `{{ .Token }}`, **Confirm email** açık), URL ve publishable anahtarı iki config dosyasına
 yaz, masaüstü ve Android uygulamasını derle. Secret anahtarı hiçbir dosyaya yazma.
 
 **Lisans:** [GNU AGPL-3.0](LICENSE). Bir Sceneva Labs projesi.

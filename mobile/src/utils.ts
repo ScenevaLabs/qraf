@@ -9,8 +9,7 @@ export function formatBytes(bytes: number | null | undefined): string {
 }
 
 // Boş alan yüzdesini gösterir (doluluk değil) — çok boş alan varken
-// çubuk dolu görünür, azaldıkça boşalır. Bkz. DESIGN.md → Boş alan
-// göstergesi.
+// çubuk dolu görünür, azaldıkça boşalır.
 export function meterText(freeBytes: number | null, totalBytes: number | null): string {
   if (!totalBytes) return `${'·'.repeat(10)} —`;
   const freePct = Math.round(((freeBytes ?? 0) / totalBytes) * 100);

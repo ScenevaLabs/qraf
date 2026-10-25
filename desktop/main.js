@@ -38,8 +38,8 @@ function lockNavigation(win) {
 // (kök = 1). Late Shift gibi projelerde bölümler
 // "PROJE / tarih / BOLUM_13 / GORUNTULER" şeklinde 3–4. seviyede
 // duruyor; daha derini (tek tek kamera kartları vb.) aramada gürültü
-// ve veritabanında gereksiz hacim yaratıyor. INTENT.md → Riskler:
-// tarama derinliği sabit değil, buradan ayarlanabilir.
+// ve veritabanında gereksiz hacim yaratıyor. Tarama
+// derinliği sabit değil, buradan ayarlanabilir.
 const FOLDER_TREE_DEPTH = 4;
 
 // İşletim sisteminin diske bıraktığı, kullanıcının işine yaramayan
@@ -114,7 +114,7 @@ function isTrackableMount(mount) {
 // medya sınıfına koyuyor, gerçek "removable" işareti fiilen sadece
 // flash bellek/SD kart gibi cihazlara veriliyor) — bu yüzden qRaf'ın asıl
 // takip etmesi gereken harici prodüksiyon SSD/HDD'leri sessizce
-// filtreleniyordu (bkz. PLAN.md Faz 11 notu, 30 Ağustos 2026: kullanıcı
+// filtreleniyordu (30 Ağustos 2026: kullanıcı
 // takılı bir USB SSD'nin hiç görünmediğini bildirdi). Daha güvenilir
 // sinyal `diskLayout()`'taki fiziksel diskin `interfaceType`'ı — USB
 // üzerinden bağlıysa harici sayılır, dahili SATA/NVMe ise sayılmaz.
@@ -123,7 +123,7 @@ function isTrackableMount(mount) {
 // diskLayout eşleşmesi tutmuyordu; arayüz bilgisi doğrudan `protocol`
 // alanında ('USB', 'Thunderbolt', 'Disk Image' ...). .dmg kurulum
 // imajları da `removable: true` geldiği için listeye "disk" olarak
-// giriyordu (bkz. MEMORY.md, 4 Ekim 2026) — disk imajları hiçbir zaman
+// giriyordu (4 Ekim 2026) — disk imajları hiçbir zaman
 // envanter diski değil.
 const EXTERNAL_INTERFACES = new Set(['USB', 'Thunderbolt', 'FireWire']);
 
@@ -132,8 +132,8 @@ function isExternalInterface(interfaceType) {
 }
 
 // macOS'ta `si.blockDevices()` her birim için ayrı `diskutil info`
-// çağırıyor; 5 harici HDD takılıyken tek çağrı ~31 sn sürüyordu (bkz.
-// MEMORY.md, 5 Ekim 2026: disk takıldıktan 1–2 dk sonra görünüyordu).
+// çağırıyor; 5 harici HDD takılıyken tek çağrı ~31 sn sürüyordu 
+// (5 Ekim 2026: disk takıldıktan 1–2 dk sonra görünüyordu).
 // `diskutil list -plist external physical` aynı bilgiyi ~30 ms'de veriyor
 // ve zaten yalnızca harici fiziksel diskleri listeliyor (dahili SSD ve
 // .dmg imajları dışarıda kalıyor). VolumeUUID, blockDevices'ın `uuid`
@@ -258,7 +258,7 @@ async function scanDisk(mountpoint) {
 
 const SPEED_TEST_SIZE_BYTES = 64 * 1024 * 1024; // 64MB — hız için yeterince büyük, disk aşınması için makul
 
-// Disk her takıldığında bir kez çalışır (bkz. MEMORY.md, 5 Ekim 2026:
+// Disk her takıldığında bir kez çalışır (5 Ekim 2026:
 // kullanıcı hızı diskin güncel sağlık göstergesi olarak kullanmak
 // istiyor — 3 ay önceki ölçüm işe yaramıyor). Her taramada çalışmaz.
 //
@@ -365,7 +365,7 @@ async function speedTestDisk(mountpoint) {
 
 // Diskin o anki aktarım hızı (MB/s, ~2 sn'lik örnek). Hız testi başka
 // bir aktarımla aynı anda çalışırsa disk paylaşıldığı için olduğundan
-// düşük çıkıyordu (bkz. MEMORY.md, 5 Ekim 2026) — test, disk boşken
+// düşük çıkıyordu (5 Ekim 2026) — test, disk boşken
 // yapılsın diye önce buna bakılıyor. Yalnız macOS (iostat); diğer
 // platformlarda 0 döner, test hemen yapılır.
 const DISK_BUSY_MBPS = 3;
@@ -383,8 +383,24 @@ function diskActivityMBps(device) {
 
 ipcMain.handle('disks:list', () => listDisks());
 ipcMain.handle('disks:isBusy', async (_event, device) => (await diskActivityMBps(device)) > DISK_BUSY_MBPS);
-ipcMain.handle('disks:scan', (_event, mountpoint) => scanDisk(mountpoint));
-ipcMain.handle('disks:speedTest', (_event, mountpoint) => speedTestDisk(mountpoint));
+// Tarama ve hız testi yalnız listDisks()'in gösterdiği harici disklerde
+// çalışır; renderer'dan gelen herhangi bir yol (ör. ev klasörü) kabul
+// edilmez. Hız testi diske dosya yazdığı için bu ayrıca önemli.
+async function assertKnownDisk(mountpoint) {
+  const disks = await listDisks();
+  if (typeof mountpoint !== 'string' || !disks.some((d) => d.mountpoint === mountpoint)) {
+    throw new Error('Unknown drive');
+  }
+}
+
+ipcMain.handle('disks:scan', async (_event, mountpoint) => {
+  await assertKnownDisk(mountpoint);
+  return scanDisk(mountpoint);
+});
+ipcMain.handle('disks:speedTest', async (_event, mountpoint) => {
+  await assertKnownDisk(mountpoint);
+  return speedTestDisk(mountpoint);
+});
 
 // QR etiketlerini PDF olarak dışa aktarır: renderer'ın oluşturduğu
 // kendi kendine yeten (self-contained) HTML'i gizli bir pencerede

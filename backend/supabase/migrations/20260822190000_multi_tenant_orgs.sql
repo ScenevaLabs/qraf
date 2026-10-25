@@ -3,7 +3,7 @@
 -- verisine erişemesin diye her satır artık bir organizations.id'ye bağlı.
 -- Şu an sistemde tek organizasyon var; mimari ileride yeni organizasyon
 -- eklemeye hazır ama bu faz yeni organizasyon *oluşturma akışı* eklemiyor
--- (bkz. INTENT.md, 22 Ağustos 2026 notu).
+-- (22 Ağustos 2026 notu).
 
 create table public.organizations (
   id uuid primary key default gen_random_uuid(),
