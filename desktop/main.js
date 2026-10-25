@@ -8,6 +8,13 @@ const POLL_INTERVAL_MS = 3000;
 
 let mainWindow;
 let lastDisksSnapshot = '';
+// Son görülen harici disklerin bağlama noktaları (bkz. assertKnownDisk).
+let knownMountpoints = new Set();
+
+function rememberDisks(disks) {
+  knownMountpoints = new Set(disks.map((d) => d.mountpoint));
+  return disks;
+}
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -381,18 +388,20 @@ function diskActivityMBps(device) {
   });
 }
 
-ipcMain.handle('disks:list', () => listDisks());
+ipcMain.handle('disks:list', async () => rememberDisks(await listDisks()));
 ipcMain.handle('disks:isBusy', async (_event, device) => (await diskActivityMBps(device)) > DISK_BUSY_MBPS);
 // Tarama ve hız testi yalnız listDisks()'in gösterdiği harici disklerde
 // çalışır; renderer'dan gelen herhangi bir yol (ör. ev klasörü) kabul
 // edilmez. Hız testi diske dosya yazdığı için bu ayrıca önemli.
+// Kontrol, 3 sn'lik yoklamanın son listesine bakar; Windows'ta
+// listDisks() birkaç saniye sürdüğü için her taramada yeniden
+// çağrılmaz, yalnız disk o listede yoksa (az önce takıldıysa) çağrılır.
 async function assertKnownDisk(mountpoint) {
-  const disks = await listDisks();
-  if (typeof mountpoint !== 'string' || !disks.some((d) => d.mountpoint === mountpoint)) {
-    throw new Error('Unknown drive');
-  }
+  if (typeof mountpoint !== 'string') throw new Error('Unknown drive');
+  if (knownMountpoints.has(mountpoint)) return;
+  rememberDisks(await listDisks());
+  if (!knownMountpoints.has(mountpoint)) throw new Error('Unknown drive');
 }
-
 ipcMain.handle('disks:scan', async (_event, mountpoint) => {
   await assertKnownDisk(mountpoint);
   return scanDisk(mountpoint);
@@ -443,7 +452,7 @@ async function pollDiskChanges() {
   if (pollInProgress) return;
   pollInProgress = true;
   try {
-    const disks = await listDisks();
+    const disks = rememberDisks(await listDisks());
     const snapshot = JSON.stringify(disks.map((d) => d.id).sort());
     if (snapshot !== lastDisksSnapshot) {
       lastDisksSnapshot = snapshot;
