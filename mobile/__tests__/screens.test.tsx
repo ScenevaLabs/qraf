@@ -17,7 +17,7 @@ const DISK: DiskRow = {
       sizeBytes: 5e12,
       children: [{ name: '2026.08.25', sizeBytes: 1e12, children: [{ name: 'BOLUM_13', sizeBytes: 4e11 }] }],
     },
-    { name: 'EMEKLI HIKAYELERI', sizeBytes: 2e12 },
+    { name: 'FAMILY STORIES', sizeBytes: 2e12 },
   ],
   total_bytes: 8e12,
   free_bytes: 1e12,
@@ -53,8 +53,8 @@ describe('DiskDetailScreen', () => {
   test('son tarama ve hızlar görünür', async () => {
     const r = await render(<DiskDetailScreen disk={DISK} onBack={() => {}} />);
     const all = texts(r.root).join('\n');
-    expect(all).toContain('SON TARAMA 12.10.2026 14:05');
-    expect(all).toContain('OKUMA 200 MB/s · YAZMA 180 MB/s');
+    expect(all).toContain('LAST SCAN 12.10.2026 14:05');
+    expect(all).toContain('READ 200 MB/s · WRITE 180 MB/s');
   });
 });
 
@@ -101,8 +101,8 @@ describe('AllDisksScreen', () => {
     const r = await render(<AllDisksScreen onSelectDisk={() => {}} onBack={() => {}} />);
     const all = texts(r.root);
     expect(all.indexOf('2. Disk')).toBeLessThan(all.indexOf('ARC MASTER'));
-    expect(all).toContain('TARAMA 12.10.2026 14:05');
-    expect(all).toContain('O 200 MB/s · Y 180 MB/s');
+    expect(all).toContain('SCANNED 12.10.2026 14:05');
+    expect(all).toContain('R 200 MB/s · W 180 MB/s');
   });
 
   test('kullanılmayan diskler ayrı, katlanmış bölümde', async () => {
