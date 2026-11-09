@@ -48,7 +48,7 @@
     }
   },
   "dependencies": {
-    "systeminformation": "^5.33.1"
+    "systeminformation": "^5.33.19"
   },
   "devDependencies": {
     "@supabase/supabase-js": "2.118.0",
