@@ -13,10 +13,12 @@ QR-coded inventory for production hard drives, with role-based access.
 
 ## English
 
-qRaf keeps track of the external drives sitting on a production company's shelf. Each drive
-gets a QR label. When a drive is plugged in, the desktop app scans it and records its folders,
-sizes and free space. Anyone on the team can scan the label with their phone and see what is on
-the drive without plugging it in.
+qRaf keeps track of the external drives where production companies and content creators keep
+their footage. Type the project or folder you are looking for and see which drive it is on.
+Each drive gets a QR label. When a drive is plugged in, the desktop app scans it and records
+its folders, sizes and free space, and measures its read/write speed. Anyone on the team can
+scan the label with their phone and see what is on the drive without plugging it in. Looking
+for an empty drive? qRaf shows which one has room, without plugging them in one by one.
 
 It replaces the hand-maintained spreadsheet of drives and fixes that spreadsheet's two
 problems: updates get skipped, and a project spelled two different ways can't be found. In
@@ -32,8 +34,8 @@ and every folder name.
 - **Folder search:** answer "which drive is this project on?" from a single box. Search covers
   subfolders four levels deep and ignores case and diacritics. The result opens with the
   matching folder highlighted.
-- **QR labels:** a unique QR value for every drive. Labels are exported to PDF in one go for
-  printing, and your company logo can be added to them.
+- **QR labels with your brand:** a unique QR value for every drive. Labels are exported to PDF
+  in one go for printing, with your own logo on them.
 - **Scan from your phone:** the Android app scans a label and shows the drive's folder tree
   and free space.
 - **Drive speed:** read/write speed is measured once each time a drive is connected. If the
@@ -185,10 +187,12 @@ cd mobile && npm test                          # mobile screen and helper tests
 
 ## Türkçe
 
-qRaf, yapım şirketlerinde rafta duran harici disklerin envanterini tutar. Her diske bir QR
-etiket yapıştırılır. Disk bilgisayara takılınca masaüstü uygulaması diski tarar; klasörleri,
-boyutları ve boş alanı kaydeder. Telefondan etiketi okutan ekip üyesi, diski takmadan içinde ne
-olduğunu görür.
+qRaf, yapım şirketlerinin ve içerik üreticilerinin görüntülerini sakladığı harici diskleri
+takip eder. Aradığın projeyi ya da klasörü yazarsın, hangi diskte olduğu önüne gelir. Her
+diske bir QR etiket yapıştırılır. Disk bilgisayara takılınca masaüstü uygulaması diski tarar;
+klasörleri, boyutları ve boş alanı kaydeder, okuma/yazma hızını ölçer. Telefondan etiketi
+okutan ekip üyesi, diski takmadan içinde ne olduğunu görür. Boş disk mi arıyorsun? Raftaki
+diskleri tek tek takmadan hangisinde yer olduğunu qRaf'tan görürsün.
 
 Excel'de elle tutulan disk listesinin iki derdi için yapıldı: güncellemeyi unutmak ve aynı
 projenin farklı yazılması yüzünden aramada bulunamaması. qRaf'ta liste, disk her takıldığında
@@ -197,7 +201,7 @@ kendiliğinden güncellenir; arama hem disk adlarında hem bütün klasör adlar
 **Ne yapar:** takılan diski otomatik tarar (takılı kaldıkça saat başı); rafta duranlar dahil
 bütün diskleri boş alan, son tarama ve hızla tek listede gösterir; "bu proje hangi diskte?"
 sorusunu dört seviye alt klasöre kadar tek kutudan yanıtlar; her disk için QR etiket üretir,
-toplu PDF'e aktarır, şirket logosu eklenebilir; Android uygulaması etiketi okutunca klasör
+toplu PDF'e aktarır, etiketlere kendi logonu koyabilirsin; Android uygulaması etiketi okutunca klasör
 ağacını gösterir; her takılışta okuma/yazma hızını ölçer; kayıp/arızalı diskleri ayrı bölüme
 alır. **Admin** disk ekler, adlandırır, kullanılmayan olarak işaretler ve kullanıcıları
 yönetir; **Kullanıcı** yalnızca görüntüler. Hesaplar davetle açılır.
